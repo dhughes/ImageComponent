@@ -1,0 +1,10 @@
+CF:
+
+d:\cfusionmx\bin\cfencode "D:\Inetpub\JavaImage\CFUN CD\ColdFusion MX, MX 6.1 Version\Image.cfc" /v "2"
+
+BD:
+
+d:\BlueDragon_Server_JX_61\bin\precompile.bat
+	D:\Inetpub\JavaImage\CFUN CD\BlueDragon JX Version (Beta)\Image.cfc
+	y
+	d

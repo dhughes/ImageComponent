@@ -1,0 +1,1 @@
+<cfapplication name="dougsapp" sessionmanagement="yes">

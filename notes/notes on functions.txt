@@ -1,0 +1,31 @@
+
+drawPolygon (maybe)
+
+------------------
+
+setBackground(color, begin, end)
+
+setFamily(family)
+
+setFont(font, begin, end)
+
+setForeground(color, begin, end)
+
+setPosture(posture, begin, end)
+
+setDirection(direction, begin, end)
+
+setSize(size, begin, end)
+
+setStrikeThrough(on/off, begin, end)
+
+setScript(super/sub, begin, end)
+
+setUnderline(style, begin, end)
+
+setWeight(weight, begin, end)
+
+setWidth(width, begin, end)
+
+
+

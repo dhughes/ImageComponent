@@ -1,0 +1,46 @@
+removed from lite:
+
+	crop
+	setImageSize
+	blur
+	findEdges
+	sharpen
+	emboss
+	rotate
+	adjustLevels
+	negate
+	darken
+	lighten
+	loadTTFFile
+	copyRectangleTo
+	setStringBackground
+	setStringFamily
+	setStringStrikeThrough
+	setStringPosture
+	setStringDirection
+	setStringUnderline
+	setStringWeight
+	setStringWidth
+	setStringSize
+
+
+need to review for any other methods which are private and nolonger used (like convolve)
+
+--------------------------------------------------------------------------
+
+Notes on things to change in documentation:
+
+1) make sure it's clear that this documentation is for the Lite version
+
+2) upsell the full version whereever possible
+
+3) change the "Installation of the Image Component" section so that it's clear
+that people will be working with data from MacromMedia.com
+
+4) The big example of advanced strings had parts removed.  Update this to reflect the changes
+
+stoped reading at page 22 (of lite docs)
+
+--------------------------------------------------------------------------
+
+Need to add notes in the documentation under any method which calls applyLookupTable that they do not work for indexed images and will throw errors.

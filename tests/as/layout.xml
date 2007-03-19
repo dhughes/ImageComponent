@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+	<banner1 b1_inputimage="banner_1.jpg" b1_inputimageext="jpg" b1_xaxis="1" b1_yaxis="0" b1_format="png" b1_scale="0"/>
+		
+	<banner2 b2_inputimage="banner_2.jpg" b2_inputimageext="jpg" b2_xaxis="0" b2_yaxis="0" b2_format="png" b2_scale="0"/>
+		
+	<buttonup fontname="verdana.ttf" fontsize="11" fontstyle="BoldItalic" maxchars="16" textR="207" textG="95" textB="55" textalignment="left" textpadding="0" textpaddingleft="5">			
+	</buttonup>
+</layout>

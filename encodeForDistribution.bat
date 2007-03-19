@@ -1,0 +1,1 @@
+c:\JRun4\servers\cfusion\cfusion-ear\cfusion-war\WEB-INF\cfusion\bin\cfencode.exe "c:\Inetpub\Alagad Image Component\2\component dev\Image.cfc" "c:\Inetpub\Alagad Image Component\2\distribute\ColdFusion MX 6.1 and MX 7 Version\Image.cfc" /v "2"
