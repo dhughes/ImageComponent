@@ -30,7 +30,7 @@ To Do:
 <cfset request.error = false />
 <cfset request.errorMessage = "" />
 <cfset request.image1 = "forest1.jpg" />
-<cfset request.ttfFile = "C:\WINDOWS\Fonts\georgia.ttf" />
+<cfset request.ttfFile = expandPath("georgia.ttf") />
 <cfset request.imageCount = 0 />
 <cfset row = 1 />
 
@@ -152,7 +152,6 @@ To Do:
 	<cfoutput>
 		#addResults(method, request.error, request.errorMessage, image)#
 	</cfoutput>
-
 	
 	<!--- readImageFromURL() --->
 	<cftry>
@@ -160,7 +159,7 @@ To Do:
 		<cfset image = request.image1 />
 		<cfset image2 = nextImage() />
 		
-		<cfset myImage.readImageFromURL("http://www.alagad.com/images/AIC2HomePageButton.gif") />
+		<cfset myImage.readImageFromURL("http://aic/UnitTesting/#request.image1#") />
 		<cfset myImage.writeImage(ExpandPath(image2), ListLast(image2, ".")) />
 		
 		<cfcatch> 
@@ -171,7 +170,6 @@ To Do:
 	<cfoutput>
 		#addResults(method, request.error, request.errorMessage, image2)#
 	</cfoutput>
-	
 	
 	<!--- writeToBase64() --->
 	<cftry>
@@ -1599,7 +1597,7 @@ To Do:
 		<cfset method = "createTexture()" />
 		<cfset image = nextImage() />
 		
-		<cfset myTexture = myImage.createTexture("c:\arlonjanis20122006040330.gif", 1, 1, 200, 200) />
+		<cfset myTexture = myImage.createTexture(expandPath("arlonjanis2008366770522.gif"), 1, 1, 200, 200) />
 		
 		<cfcatch> 
 			<cfset request.error = true />
