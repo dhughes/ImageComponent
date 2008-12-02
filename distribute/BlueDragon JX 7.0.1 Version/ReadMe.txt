@@ -1,4 +1,4 @@
-Alagad Image Component for BlueDragon 6.2 (and later)
+Alagad Image Component for BlueDragon 7.0.1 (and later)
 ReadMe Notes
 
 http://www.alagad.com/index.cfm/name-aic/cd-1
