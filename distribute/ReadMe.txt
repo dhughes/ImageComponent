@@ -1,7 +1,4 @@
-Alagad Image Component 2.0 for ColdFusion and BlueDragon CD-ROM		
-ReadMe Notes
-
-http://www.alagad.com/index.cfm/name-aic/cd-2
+Alagad Image Component 2.0 ReadMe Notes
 
 ==========================================================================
 Table of Contents
@@ -20,37 +17,17 @@ the documentation folder.
 To run the examples in the examples folder you will need to create a mapping
 named "/Image" which points to the folder where you placed the Image.cfc file.
 
-Purchasing Instructions
+Contents
 ====================
-The Alagad Image Component is not free software.  Subject to the terms and
-conditions of this license you are hereby granted licensed by Alagad Inc. to
-install and use one copy of the Alagad Image Component on one computer for a
-period of no more than 30 days from the initial installation.  If you use this
-software after the 30 days have lapsed you are required to pay a fee of $75.00
-per installation.  Payments can be made at 
-http://www.alagad.com/index.cfm/name-buyl/prod-aic.
-
-For more information see the document 
-"Alagad Image Component 30 Day EvaluationLicense.rtf"
-
-CD-ROM Contents
-====================
-This CD-ROM contains a trial version of the Alagad Image Component and related 
+The ImageComponent.zip file contains a the Alagad Image Component and related 
 materials.  The folders on this CD-ROM contain the following items.
 
-BlueDragon JX 6.1 Version (Beta)
-This version of the Image Component has been removed and is no longer supported.
-
-BlueDragon JX 6.2 Version (Beta)
-A beta version of the Alagad Image Component.  The ReadMe.txt file in this 
-directory contains information on this version of the Image Component.
-
-ColdFusion MX 6.1 and MX 7 Version
-The Alagad Image Component for ColdFusion MX 6.1, MX 7 or later.
+Image.cfc
+The Image Component 
 
 Documentation
 Documentation for the Alagad Image Component.  Documentation provided in 
-Acrobat, HTML and Microsoft Word formats.
+Acrobat and Microsoft Word formats.
 
 Examples
 This folder contains 7 examples demonstrating common usages for the Image
