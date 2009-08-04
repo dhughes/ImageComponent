@@ -10,6 +10,9 @@
 		<!-- delete build files -->
 		<delete dir="${buildDirectory}/distribute" failonerror="true" />
 		
+		<!-- create the build dir -->
+		<mkdir dir="${buildDirectory}/distribute"/>
+		
 		<!-- export from svn -->
 		<exec executable="svn">
 			<arg line="export ${svnUrl}/Image.cfc --force ${buildDirectory}/distribute/Image.cfc --username ${SVNUSERNAME} --password ${SVNPASSWORD}"/> 
