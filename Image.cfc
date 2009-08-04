@@ -1,112 +1,3 @@
-<!------------------------------------------------------------------------------
-Source Code Copyright © 2004 Alagad, Inc. www.alagad.com
-
-  Application: Alagad Image Component 
-  Supported CF Version: MX 6.1, BlueDragon 6.1 JX (or better)
-  File Name: Image.cfc
-  CFC Component Name: Image
-  Created By: Doug Hughes (alagad@alagad.com)
-  Created Date: 05/10/2004
-  Description: I am a CFC which can be used to create and edit images.
-
-Version History:
-  
-  mm/dd/yyyy	Author		Version		Comments
-  05/10/2004	D.Hughes	?			Created
-  05/25/2004	D.Hughes	?			Removed init()
-  06/02/2004	D.Hughes	?			Readied for release
-  06/21/2004	D.Hughes	?			Fixed error in getSimpleStringMetrics() where method was called on Graphics before Graphics was set.
-  06/22/2004	D.Hughes	?			Removed all instances of intValue().
-  06/23/2004	D.Hughes 	?			Various BD tunings.
-  06/28/2004	D.Hughes	?			Added many more JavaCast()s.  May have a few that were missed.
-  06/29/2004	D.Hughes	?			Removed reference to #cfcatch.RootCause.cause.Message#" in cfthrow tag when reading images for DB compatibility.
-  07/02/2004	D.Hughes	?			Added capability to load Images from URL via java FileIO.  
-  07/03/2004	D.Hughes	?			Added convenience methods for scaleHeight() and scaleWidth().
-  07/03/2004	D.Hughes	?			Created an eyedropper tool to grab a color from any image pixel (getColorFromPixel).
-  07/03/2004	D.Hughes	?			Added a trimEdges() method to remove pixels of the same color from the edges of an image.  (similar to ImageMagick and PhotoShop)
-  07/04/2004	D.Hughes	?			Added writeToBase64() and readFromBase64() methods to write and read image data to/from base64 format.
-  07/04/2004	D.Hughes	?			Added writeToBrowser() method to write the image we're working with directly to the browser.
-  07/07/2004	D.Hughes	?			Added scaleToFit() method to scale images to fit within a pixel reigon.
-  07/08/2004	D.Hughes 	?			Added key-based licensing system and image tagging for unlicensed images.
-  08/16/2004	D.Hughes	?			Added methods: setAntialias, getAntialias, resetAntialias.
-  08/28/2004	D.Hughes	2.0			Added methods and variables for version information.  Based on updates to 1.1 and lite.
-  08/29/2004	D.Hughes	2.1			Changed how Indexed colors are handled.  Added method createComparableImage() and implemented it thoughout the component.
-  09/01/2004	D.Hughes	2.2			Many changes.  Mostly to error messages and error checking.  Add process to verify that an image is loaded before we can call methods on it.
-  09/02/2004	D.Hughes	2.3			Added fixes to varous setString methods so that negative numbers and numbers greater than the string length throw nicer errors.
-  09/06/2004	D.Hughes	2.4			Fixed error messages in createColor 
-  09/07/2004	D.Hughes	2.5			Fixed bug when reading image and then calling getWidth().  Made sure that the transparency settings and color were set in the code that "tags" unlicensed images.
-  09/12/2004	D.Hughes	2.6			Fixed error in createImage which threw incrorred error message.  
-  09/16/2004	D.Hughes	2.7			Removed requirement in drawString and drawSimpleString for x and y to be greater than 0.
-  10/12/2004	D.Hughes	2.8			Implemented compression settings on all methods for writing.  Woo hoo!
-  10/23/2004	D.Hughes	2.9			Compression updates so that it works when creating a new image.  Also added the capability to have a file aickey.txt in the same directory as the component to set the license key.
-  										Added several other fixes/changes related to code due to unit testing results.
-  10/28/2004	D.Hughes	2.10		Fixed problem with the AIC locking files being read and not releasing the lock.
-  10/31/2004	D.Hughes	2.11		Fixed problems where alpha channels are writing to JPEGs and corrupting them.  This was bad.  This is fixed.  Yay.
-  11/14/2004	D.Hughes	2.12		Added method setImageMode() and getImageMode() which set/get the image type (rgb, grayscale, etc).  Updated how grayscale() and writing images set image types.  
-  02/08/2005	D.Hughes	2.13		Altered how image compression functions.  It used to place a 100px thumbnail in the image... this was not compressed and inflated the file size.  I changed this so that CF 6.1 uses a 1px thumbnail.  
-  						MX 7 now adds no thumbnail at all.
-  04/13/2005  	D.Hughes	2.14		Fixed bug when writing Tiff and other formats.
-  04/19/2005	D.Hughes	2.15		Fixed bug with jpeg compresson on MX 6.1
-  05/03/2005	D.Hughes	2.16		Fixed a few minor bugs related to BD 6.1 and 6.2.  Added beta support for 6.2.
-  05/18/2005	D.Hughes	2.17		Added the following methods: createPath(), addPathLine(), addPathJump(), addPathQuadraticCurve() addPathBezierCurve(), closePath(), drawPath()
-  06/15/2005	D.Hughes	2.18		Added getSize() method to return the size a file will be on disk.
-  
-Comments:
-
-  mm/dd/yyyy	Author		Comment
-  05/10/2004	D.Hughes	Variables which start with upper case letters are objects, lowercase are primitives.  (Usualy)
-  05/10/2004	D.Hughes	Some getter/setter methods for java objects have a type of "any".  This is because specifying the java class name does not work in CF.
-  07/02/2004	D.Hughes	While trying to read/write image meta data I discovered that this is NOT exif data.  What
-							that means is that to edit exif data I'd have to do it manually, which would probably be a real pain.  This bears more looking into, but may not be worth
-							the extra time.
-  08/16/2004	D.Hughes	I've added setAntialias, getAntialias, resetAntialias.  I need to document these.
-  10/12/2004	D.Hughes	I added the "quality" attribute to the writeImage methods.  I need to document these.
-  10/20/2004	D.Hughes	Today I found a bug in writing compressed versions of images I created and drew using the image component.  I don't know at the moment what's going wrong.
-  							in general either I get a null pointer error (which I think I fixed) or image colors are getting messed up).  See comress.cfm and compress2.cfm in the tests directory
-  
-To Do:
-
-  mm/dd/yyyy	Status		Priority	Comment
-  06/24/2004	Pending		Low			Check if image type supported when reading images for createTexture and drawImage. -- I'm not sure how to do this, or if I can.  I can tell the
-  										user what image types are supported using getReadable/WritableFormats but I can't trust that the file extension for an image really corrisponds
-										to the data in it.  For now, I updated ther error message recieved when reading images.  (May also want to check this against reading other file
-										types like EXE, CFM, etc)
-  07/02/2004	None		Medium		Add a flood fill method.  flood(x, y).  Ideally, this would be able to fill with a texture, gradient, or solid color.  This would antialias. This
-  										whould have some sort of tolerance control to control what matches and what doesn't.  There are several resouces for algorythems on the web.  One
-										possible idea is to have a method which takes one pixel, adds it to an array of pixels checked, fills it.  It then looks at all of the surrounding
-										pixels and calls the same method on each.  These are filled only if their color is withing the tollerance levels.  This continues to recurse.  Each
-										recursion is checked to insure that it's not duplicating effort.  Because of recursion this might be a bad idea to implement in this tag.  I'm not
-										sure what the use case would even be for this.  However, it would be "cool".  Perhaps one could build a fairly robust image editing program out of
-										this and a web page.
-  07/15/2004	None		Medium		Add method to return various image properties.  Possibly from Buffered Images' getProperty() and getPropertyNames(). (EXIF data)
-  07/15/2004	None		High		Insure that all drawing methods allow drawing outside the image bounds.  Many of these throw errors if you try to draw at -x or -y points.
-  07/15/2004	None		Low			Add a sepia() method to convert the image to a sepia tone.
-  07/15/2004	None		Low			Add a vignette() method to add a vinette effect to the image.  Might have different vinette strenghts and shapes as well as the ability to set
-  										the color of the vingette.
-  07/15/2004	None		Low			Add the ability to create selections within the image which are the only regions effected by calls to methods
-  07/15/2004	None		Low			Add methods for working with image channels.  IE:  clearChannel()  erases all data in the channel, clearAllButChannel() to delete all
-  										channels except the current one, setImageDataFromChannel() copies the data out of the channel and sets the entire image to it -- could be good
-										for extracting alpha channels.  setChannel() sets the data in an alpha channel explicitly.... These are all just ideas and need more thought.
-										It would be good to find a way to set active channels which calls to drawing methods would only effect.  They way I can shut off the green and
-										red channels and only effect the blue and alpha.
-  07/15/2004	None		Low			Add a method to return a structure of image data. Or add more methods to get more image data and then one uber-method to call all others and return t
-  										their results as a struct.  Should return width, height, origionalFileSize, colorspace, etc, etc.  Look at BufferedImage and Image to see if there
-										are any other properties we can extract.
-  08/13/2004	Document!	High		Added a way to disable or enable antialiasing.  Currently, when drawing, the app looks at (approx) line 3022 where it sets VALUE_ANTIALIAS_ON 
-  										for all drawing.  It's fine that this is defaulted to on, but add a method where this can at least be set. NOTE: I added setAntialias, getAntialias, resetAntialias.
-										these methods need to be documented in the docs.
-  09/05/2004	Note 		High		The drawImage and scale methods use bilinear interpolation (and this is noted in the docs).  I may want to add arguments to these methods to select
-  										what type of interpolation to use.
-  05/11/2005	Pending		Medium		Add the ability to stroke text.  Add the ability to draw abritrary java shape objects.
-  
-Canceled/On Indefinate Hold:
-
-  07/02/2004	None		Low			Image Capture from a web cam.  I don't know why this would be needed, but it'd be cool to be able to just grab a picture from your webcam. I
-  										can't do this -- I need the Java Media Kit installed to do this (I think this is seperate from the JRE)
-  06/24/2004	On Hold		High		Create methods to read and edit image meta data (exif).  (Tried - Image metadata does NOT contain exif data.  Must read data manualy.) 
-  										Update: began work on another component for reading and writing exif data.
-								
-------------------------------------------------------------------------------->
 <cfcomponent displayname="Image" hint="I am a CFC which can be used to create and edit images." output="no">
 	<!--- // -- // -- // -- // -- // -- // -- // -- // ---- 
 	//
@@ -116,8 +7,8 @@ Canceled/On Indefinate Hold:
 	<!--- version --->
 	<cfset variables.version = StructNew() />
 	<cfset variables.version.product = "Alagad Image Component" />
-	<cfset variables.version.version = "2.16" />
-	<cfset variables.version.releaseDate = "06/15/2005" />
+	<cfset variables.version.version = "${version}" />
+	<cfset variables.version.releaseDate = "${date}" />
 
 	<!--- Image: 			I am the image we're working with --->
 	<cfset variables.Image = CreateObject("java", "java.awt.image.BufferedImage") />
@@ -159,10 +50,6 @@ Canceled/On Indefinate Hold:
 	<cfset variables.shearY = 0 />
 	<!--- Font --->
 	<cfset variables.Font = CreateObject("Java", "java.awt.Font") />
-	<!--- charString (for key) --->
-	<cfset variables.charString = "0123456789ABCDEFGHJKLMNPQRTUVWXY" />
-	<!--- licensed --->
-	<cfset variables.licensed = false />
 	<!--- antialias --->
 	<cfset variables.antialias = true />
 	
@@ -174,13 +61,7 @@ Canceled/On Indefinate Hold:
 	<cffunction name="setKey" access="public" output="false" returntype="Image" hint="I set the license key for the component.">
 		<cfargument name="key" hint="I am the license key to use." required="yes" type="string" />
 		
-		<!--- validate the key. --->
-		<cfif validateKey(arguments.key, "ImageComponent@l794o1WhatIsTheMeaningOfLifeTheUniverseAndEverthing?42.")>
-			<!--- if this is licensed correctly, indicate so --->
-			<cfset variables.licensed = true />
-		<cfelse>
-			<cfset variables.licensed = false />
-		</cfif>
+		<!--- this method is a hold-over from before the AIC was free.  this function is now ignored --->
 		
 		<!--- return the image object. --->
 		<cfreturn this />
@@ -607,9 +488,6 @@ Canceled/On Indefinate Hold:
 		<cfargument name="quality" hint="I am set the compression quality when writing the image." required="no" type="numeric" />
 		<cfset var tempFile = getTempFile(getTempDirectory(), "AIC") />
 		
-		<!--- tag the image --->
-		<cfset tagImage() />
-		
 		<cfif IsDefined("arguments.quality")>
 			<!--- write the image to a temp file --->
 			<cfset writeImage(tempFile, arguments.format, arguments.quality) />
@@ -675,9 +553,6 @@ Canceled/On Indefinate Hold:
 		<cfset var Transform = CreateObject("Java", "java.awt.geom.AffineTransform") />
 		<cfset var Operation = CreateObject("Java", "java.awt.image.AffineTransformOp") />
 		<cfset var List = 0 />
-		
-		<!--- tag the image --->
-		<cfset tagImage() />
 		
 		<cfset ImageWriterIterator = getImageIO().getImageWritersByFormatName(JavaCast("string", arguments.format)) />
 
@@ -808,9 +683,6 @@ Canceled/On Indefinate Hold:
 		
 		<!--- Because this is a private method I'm not validating that the OutputStream comming in is really an output stream ---> 
 				
-		<!--- tag the image --->
-		<cfset tagImage() />
-		
 		<cftry>
 			<!--- output the file --->
 			<cfset getImageIO().write(Image, arguments.format, arguments.OutputStream) />
@@ -3823,64 +3695,6 @@ Canceled/On Indefinate Hold:
 		</cfif>
 		
 		<cfreturn key />
-	</cffunction>
-	
-	<cffunction name="tagImage" access="private" output="false" returntype="void">
-		<cfset var String1 = "- The Alagad Image Component -" />
-		<cfset var String2 = "A CFC for editing images." />
-		<cfset var String3 = "http://www.alagad.com" />
-		<cfset var String4 = "Alagad" />
-		<cfset var top = 0 />
-		<cfset var white = CreateColor(255, 255, 255) />
-		
-		<!--- load the license if it exists in aickey.txt --->
-		<cfset loadLicenseFile() />
-		
-		<cfif NOT variables.licensed>
-			<cfset m1 = GetSimpleStringMetrics(String1) />
-			<cfset m2 = GetSimpleStringMetrics(String2) />
-			<cfset m3 = GetSimpleStringMetrics(String3) />
-			<cfset totalHeight = m1.height + m2.height + m3.height + 10 />
-			
-			<cfset setFill(white) />
-			<cfset setTransparency(100) />
-						
-			<cfset top = Round((getHeight() - totalHeight)/2) />
-			
-			<!--- 
-				I'm wrapping this block of code in a try/catch because I want to insure that we 
-				get though this gracefuly.  If for some unforseen reason this bombs out I think 
-				that we'd be better skipping it than throwing an error.
-			--->
-			<cftry>
-				<cfif getWidth() LTE 50 OR getHeight() LTE 50>
-					<cfset drawSimpleString(String4, 2, getHeight() - 2) />
-				<cfelse>
-					<cfset drawSimpleString(String1, Round((getWidth() - m1.width)/2), top + m1.height) />
-					<cfset drawSimpleString(String2, Round((getWidth() - m2.width)/2), top + m1.height + 5 + m2.height) />
-					<cfset drawSimpleString(String3, Round((getWidth() - m3.width)/2), top + m1.height + 5 + m2.height + 5 + m3.height) />
-				</cfif>
-				<cfcatch>
-					<!--- do nothing --->
-				</cfcatch>
-			</cftry>
-		</cfif>
-	</cffunction>
-	
-	<!--- loadLicenseFile --->
-	<cffunction name="loadLicenseFile" access="private" output="false" returntype="void" hint="I check for the existance of (and contents of) aickey.txt and load it as the license key, if it exists.">
-		<cfset var cfcKey = getDirectoryFromPath(getCurrentTemplatePath()) & "aickey.txt" />
-		<cfset var key = "" />
-		
-		<!--- look for a file named aickey.txt --->
-		<cfif FileExists(cfcKey)>
-			<!--- read the key file, if possible --->
-			<cffile action="read"
-				file="#cfcKey#"
-				variable="key" />
-			<!--- set the key (if not valid it won't be licensed) --->
-			<cfset setKey(trim(key)) />
-		</cfif>
 	</cffunction>
 	
 	<!--- createComparableImage --->

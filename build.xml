@@ -1,0 +1,64 @@
+<project name="Build Script" default="BuildPlugin">
+	
+	<target name="BuildPlugin">
+		<input message="Please enter SVN server username:" addproperty="SVNUSERNAME" />
+		<input message="Please enter SVN server password:" addproperty="SVNPASSWORD" />
+		
+		<property name="svnUrl" value="http://svn.alagad.com/imagecomponent/trunk/"/>
+		<property name="buildDirectory" value="build" />
+		
+		<!-- delete build files -->
+		<delete dir="${buildDirectory}/distribute" failonerror="true" />
+		
+		<!-- export from svn -->
+		<exec executable="svn">
+			<arg line="export ${svnUrl}/Image.cfc --force ${buildDirectory}/distribute/Image.cfc --username ${SVNUSERNAME} --password ${SVNPASSWORD}"/> 
+		</exec>
+		<exec executable="svn"> 
+			<arg line="export ${svnUrl}/distribute/Documentation --force ${buildDirectory}/distribute/Documentation --username ${SVNUSERNAME} --password ${SVNPASSWORD}"/> 
+		</exec>
+		<exec executable="svn"> 
+			<arg line="export ${svnUrl}/distribute/Examples --force ${buildDirectory}/distribute/Examples --username ${SVNUSERNAME} --password ${SVNPASSWORD}"/> 
+		</exec>
+		<exec executable="svn"> 
+			<arg line="export ${svnUrl}/distribute/AlagadImageComponentLogo.gif --force ${buildDirectory}/distribute/AlagadImageComponentLogo.gif --username ${SVNUSERNAME} --password ${SVNPASSWORD}"/> 
+		</exec>
+		<exec executable="svn"> 
+			<arg line="export ${svnUrl}/distribute/ReadMe.txt --force ${buildDirectory}/distribute/ReadMe.txt --username ${SVNUSERNAME} --password ${SVNPASSWORD}"/> 
+		</exec>
+		
+		<!-- note the current build -->
+		<exec executable="svn" outputproperty="svnInfo"> 
+			<arg line="info ${svnUrl} --username ${SVNUSERNAME} --password ${SVNPASSWORD}"/> 
+		</exec>
+		
+		<echo message="${svnInfo}" />
+		
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+			<classpath>
+				<pathelement location="antlib/ant-contrib-1.0b3.jar"/>
+			</classpath>
+		</taskdef>
+		
+		<propertyregex property="BUILDREVISION"
+			input="${svnInfo}"
+			regexp="Revision: ([0-9]*)"
+			select="\1"
+			casesensitive="false" />
+		
+		<echo message="BUILDREVISION: ${BUILDREVISION}" />
+	
+		<replace dir="${buildDirectory}" token="${version}" value="2.${BUILDREVISION}"  />
+		
+		<tstamp>
+			<format property="now" pattern="M/d/yyyy" locale="en,UK"/>
+		</tstamp>
+		
+		<replace dir="${buildDirectory}" token="${date}" value="${now}"  />
+
+		<!-- zip up the plugin -->
+		<zip destfile="${buildDirectory}/ImageComponent.zip"
+			basedir="${buildDirectory}/distribute" />	
+	</target>
+	
+</project>
